@@ -39,7 +39,7 @@ export default function AddressLookup() {
   const [results, setResults] = useState<any[]>([]);
   
   // Official API State
-  const [projectId, setProjectId] = useState(BILLIONS_PROJECT_ID);
+  const [projectId, setProjectId] = useState('billions');
   
   // Direct Chain State
   const [contractAddr, setContractAddr] = useState('');
