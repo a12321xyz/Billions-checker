@@ -11,13 +11,23 @@ export const AirdropResultSchema = z.object({
 export type AirdropResult = z.infer<typeof AirdropResultSchema>;
 
 export class ActualChecker {
-  private baseUrl = 'https://api.clique.tech/v1/airdrop/check';
+  private baseUrl = 'https://auth-api.clique.tech/v1/airdrop/check';
 
   async checkAllocation(projectId: string, address: string): Promise<AirdropResult> {
     try {
       const url = `${this.baseUrl}?projectId=${projectId}&address=${address}`;
       const response = await fetch(url);
       
+      if (response.status === 404) {
+        return {
+          address,
+          allocation: 0,
+          projectId,
+          tier: 'SOON',
+          isVerified: true
+        };
+      }
+
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`);
       }
