@@ -49,44 +49,52 @@ export default function AddressLookup() {
   const chainChecker = new ContractChecker();
 
   const handleScan = async () => {
-    const addresses = input.split(/[\n, \t]+/).map(l => l.trim()).filter(l => isAddress(l));
+    const addresses = input.split(/[\n, \t]+/)
+      .map(l => l.trim().toLowerCase())
+      .filter(l => isAddress(l));
+
     if (addresses.length === 0) return;
 
     setLoading(true);
     setResults([]);
 
-    if (scanType === 'official') {
-      const scanPromises = addresses.map(async (addr) => {
-        const res = await checker.checkAllocation(projectId, addr);
-        return { 
-          addr, 
-          allocation: res.allocation, 
-          type: 'Official', 
-          tier: res.tier, 
-          isVerified: res.isVerified,
-          error: !res.isVerified && res.tier === 'ERROR'
-        };
-      });
-      setResults(await Promise.all(scanPromises));
-    } else {
-      const scanPromises = addresses.map(async (addr) => {
-        const res = await chainChecker.checkOnChain({
-          contractAddress: contractAddr,
-          userAddress: addr,
-          chainKey
+    try {
+      if (scanType === 'official') {
+        const scanPromises = addresses.map(async (addr) => {
+          const res = await checker.checkAllocation(projectId, addr);
+          return { 
+            addr, 
+            allocation: res.allocation, 
+            type: 'Official', 
+            tier: res.tier, 
+            isVerified: res.isVerified,
+            error: !res.isVerified && (res.tier === 'ERROR' || res.tier === 'OFFLINE')
+          };
         });
-        return {
-          addr,
-          allocation: res.allocation,
-          type: 'On-Chain',
-          tier: 'DIRECT',
-          isVerified: res.success,
-          error: !res.success
-        };
-      });
-      setResults(await Promise.all(scanPromises));
+        setResults(await Promise.all(scanPromises));
+      } else {
+        const scanPromises = addresses.map(async (addr) => {
+          const res = await chainChecker.checkOnChain({
+            contractAddress: contractAddr.trim().toLowerCase(),
+            userAddress: addr,
+            chainKey
+          });
+          return {
+            addr,
+            allocation: res.allocation,
+            type: 'On-Chain',
+            tier: 'DIRECT',
+            isVerified: res.success,
+            error: !res.success
+          };
+        });
+        setResults(await Promise.all(scanPromises));
+      }
+    } catch (err) {
+      console.error('Scan failed:', err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

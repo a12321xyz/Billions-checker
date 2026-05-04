@@ -26,47 +26,14 @@ function getTimeLeft(now = Date.now()): TimeLeft {
 }
 
 function TimeUnit({ value, label }: { value: number; label: string }) {
-  const [prevValue, setPrevValue] = useState(value);
-  const [animKey, setAnimKey] = useState(0);
-
-  useEffect(() => {
-    if (value !== prevValue) {
-      setAnimKey((k) => k + 1);
-      setPrevValue(value);
-    }
-  }, [value, prevValue]);
-
   return (
-    <div className="flex flex-col items-center gap-1.5">
-      <div
-        className="glass-card rounded-lg flex items-center justify-center relative overflow-hidden"
-        style={{
-          width: 'clamp(60px, 14vw, 84px)',
-          height: 'clamp(68px, 16vw, 96px)',
-          border: '1px solid rgba(0,200,212,0.15)',
-        }}
-      >
-        <span
-          key={animKey}
-          className="font-black animate-count-up"
-          style={{
-            fontFamily: "'Orbitron', monospace",
-            fontSize: 'clamp(24px, 6vw, 36px)',
-            color: '#00c8d4',
-            textShadow: '0 0 8px rgba(0,200,212,0.4)',
-          }}
-        >
+    <div className="flex flex-col items-center gap-2">
+      <div className="w-14 h-16 sm:w-16 sm:h-20 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center">
+        <span className="text-2xl sm:text-3xl font-black text-white" style={{ fontFamily: "'Outfit', sans-serif" }}>
           {String(value).padStart(2, '0')}
         </span>
-        <div
-          className="absolute bottom-0 left-4 right-4 h-px"
-          style={{ background: 'rgba(0,200,212,0.2)' }}
-        />
       </div>
-      <span
-        className="text-xs uppercase tracking-widest opacity-40"
-        style={{ color: '#00c8d4', fontFamily: "'Share Tech Mono', monospace" }}
-      >
+      <span className="text-[8px] tracking-[0.3em] uppercase text-white/30 font-bold">
         {label}
       </span>
     </div>
@@ -75,10 +42,7 @@ function TimeUnit({ value, label }: { value: number; label: string }) {
 
 function Colon() {
   return (
-    <div
-      className="text-xl font-black mt-3 opacity-30"
-      style={{ color: '#cc0088', fontFamily: "'Orbitron', monospace" }}
-    >
+    <div className="text-xl font-black mt-6 opacity-10 text-white">
       :
     </div>
   );
@@ -112,11 +76,8 @@ export default function CountdownTimer() {
   if (timeLeft.expired) {
     return (
       <div className="text-center py-4">
-        <span
-          className="text-2xl font-black"
-          style={{ fontFamily: "'Orbitron', monospace", color: '#00c8d4' }}
-        >
-          TGE IS LIVE
+        <span className="text-xl font-black text-white" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          THE REVELATION IS LIVE
         </span>
       </div>
     );

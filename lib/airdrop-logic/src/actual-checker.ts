@@ -12,20 +12,23 @@ export type AirdropResult = z.infer<typeof AirdropResultSchema>;
 
 export class ActualChecker {
   private baseUrl = 'https://auth-api.clique.tech/v1/airdrop/check';
+  private fallbackUrl = 'https://api.clique.tech/v1/airdrop/check';
 
   async checkAllocation(projectId: string, address: string): Promise<AirdropResult> {
     try {
-      const url = `${this.baseUrl}?projectId=${projectId}&address=${address}`;
-      const response = await fetch(url);
+      // 1. Try Primary (Auth API)
+      let url = `${this.baseUrl}?projectId=${projectId}&address=${address}`;
+      let response = await fetch(url);
       
+      // 2. Handle 'Coming Soon' state specifically
       if (response.status === 404) {
-        return {
-          address,
-          allocation: 0,
-          projectId,
-          tier: 'SOON',
-          isVerified: true
-        };
+        return { address, allocation: 0, projectId, tier: 'SOON', isVerified: true };
+      }
+
+      // 3. If Primary fails, try Fallback
+      if (!response.ok) {
+        url = `${this.fallbackUrl}?projectId=${projectId}&address=${address}`;
+        response = await fetch(url);
       }
 
       if (!response.ok) {
@@ -36,13 +39,7 @@ export class ActualChecker {
       const data = json.data;
 
       if (!data || data.allocation === undefined) {
-        return {
-          address,
-          allocation: 0,
-          projectId,
-          tier: 'NONE',
-          isVerified: true
-        };
+        return { address, allocation: 0, projectId, tier: 'NONE', isVerified: true };
       }
 
       return {
@@ -54,13 +51,7 @@ export class ActualChecker {
       };
     } catch (error) {
       console.error('Check failed:', error);
-      return {
-        address,
-        allocation: 0,
-        projectId,
-        tier: 'ERROR',
-        isVerified: false
-      };
+      return { address, allocation: 0, projectId, tier: 'OFFLINE', isVerified: false };
     }
   }
 }
