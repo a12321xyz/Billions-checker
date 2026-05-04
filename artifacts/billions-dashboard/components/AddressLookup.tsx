@@ -42,7 +42,7 @@ export default function AddressLookup() {
   const [projectId, setProjectId] = useState('billions');
   
   // Direct Chain State
-  const [contractAddr, setContractAddr] = useState('');
+  const [contractAddr, setContractAddr] = useState('0xc29ab9ea042a8b96c2e4c74fdbb7f04b718bc882');
   const [chainKey, setChainKey] = useState('eth');
 
   const checker = new ActualChecker();
