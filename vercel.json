@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "artifacts/billions-dashboard/.next",
+  "framework": "nextjs"
+}
