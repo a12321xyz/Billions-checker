@@ -1,0 +1,21 @@
+{
+  "name": "@workspace/airdrop-logic",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "tsx --test src/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.25.76",
+    "viem": "^2.23.10"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "tsx": "^4.21.0"
+  }
+}
