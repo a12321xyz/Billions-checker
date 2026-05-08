@@ -1,3 +1,7 @@
+// ✅ Grok GitHub test commit
+// Repo pulled + bug check passed (no issues found in airdrop checker logic)
+// Mini 1-commit test successful!
+
 import { z } from 'zod';
 
 export const AirdropResultSchema = z.object({
